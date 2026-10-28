@@ -2,5 +2,6 @@ packages:
   - .
 allowBuilds:
   bcrypt: false
+  canvas: false
   sharp: false
 minimumReleaseAge: 2880
