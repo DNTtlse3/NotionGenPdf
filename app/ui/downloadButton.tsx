@@ -13,7 +13,7 @@ export default function DownloadButton({ fileName }: DownloadButtonProps): React
   const handleDownload = async (): Promise<void> => {
     setIsDownloading(true);
     try {
-      // 1. Récupération du fichier depuis le serveur en Base64
+      // 1. Récupération des données depuis la Server Action (Asynchrone)
       const base64Content: string = await getFileContent(fileName);
       
       // 2. Conversion du Base64 en Blob binaire
@@ -25,27 +25,20 @@ export default function DownloadButton({ fileName }: DownloadButtonProps): React
       const byteArray: Uint8Array = new Uint8Array(byteNumbers);
       const blob: Blob = new Blob([byteArray], { type: 'application/octet-stream' });
 
-      // 3. Dialogue d'enregistrement natif (FileSystemWritableFileStream API)
-      if ('showSaveFilePicker' in window) {
-        // @ts-ignore - showSaveFilePicker n'est pas encore standardisé dans certains types TS globaux
-        const handle = await (window as any).showSaveFilePicker({
-          suggestedName: fileName,
-        });
-        const writable = await handle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-      } else {
-        // Solution de repli (Fallback) pour les navigateurs plus anciens
-        const url: string = window.URL.createObjectURL(blob);
-        const a: HTMLAnchorElement = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-      }
+      // 3. Téléchargement via l'API standard Anchor
+      const url: string = window.URL.createObjectURL(blob);
+      const a: HTMLAnchorElement = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      
+      document.body.appendChild(a);
+      a.click();
+      
+      // Nettoyage du DOM et de la mémoire
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-      // Gère aussi l'annulation de la fenêtre par l'utilisateur
-      console.warn("Téléchargement annulé ou interrompu par l'utilisateur", err);
+      console.error("Download failed", err);
     } finally {
       setIsDownloading(false);
     }
@@ -57,7 +50,7 @@ export default function DownloadButton({ fileName }: DownloadButtonProps): React
       disabled={isDownloading}
       className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white text-sm font-medium rounded transition"
     >
-      {isDownloading ? 'Préparation...' : 'Enregistrer sous...'}
+      {isDownloading ? 'Downloading...' : 'Download'}
     </button>
   );
 }
