@@ -150,6 +150,3 @@ vite.config.ts.timestamp-*
 
 #Files generated
 file-gen/
-
-#Public
-public/TMP/*
