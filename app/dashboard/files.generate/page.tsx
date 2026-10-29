@@ -1,13 +1,17 @@
+'use server'
 import React from 'react';
 import { getFilesList } from '@/app/utils/actions';
 import DownloadButton from '@/app/ui/downloadButton';
+import { Button } from '@/app/ui/button'
 
 export default async function Page(): Promise<React.JSX.Element> {
   const files: string[] = await getFilesList();
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
+      
       <h1 className="text-2xl font-bold text-black mb-6">Files</h1>
+    
       
       {files.length === 0 ? (
         <p className="text-gray-500">No files found in the folder.</p>
