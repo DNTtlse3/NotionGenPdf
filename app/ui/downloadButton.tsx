@@ -13,7 +13,7 @@ export default function DownloadButton({ fileName }: DownloadButtonProps): React
   const handleDownload = async (): Promise<void> => {
     setIsDownloading(true);
     try {
-      // 1. Récupération des données depuis la Server Action (Asynchrone)
+      // 1. Récupération des données
       const base64Content: string = await getFileContent(fileName);
       
       // 2. Conversion du Base64 en Blob binaire
