@@ -8,7 +8,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
   // 1. Validation du code
   if (!code) {
-    logger.error("Échec de la récupération : le paramètre 'code' est manquant.");
+    logger.error("Retrieval failed: the 'code' parameter is missing.");
     return NextResponse.json(
       { error: "Retrieve code failed" },
       { status: 400 }
